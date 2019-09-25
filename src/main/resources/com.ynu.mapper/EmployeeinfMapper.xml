@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ynu.mapper.EmployeeinfMapper">
+
+    <resultMap id="employeeDetail" type="com.ynu.pojo.EmployeeWithDeptJob">
+        <id property="employee_id" column="employee_id"/>
+        <result property="realname" column="realname"/>
+        <result property="sex" column="sex"/>
+        <result property="phone" column="phone"/>
+        <result property="email" column="email"/>
+        <result property="education" column="education"/>
+        <result property="card_id" column="card_id"/>
+        <result property="address" column="address"/>
+        <result property="postcode" column="postcode"/>
+        <result property="tel" column="tel"/>
+        <result property="qqnum" column="qqnum"/>
+        <result property="birthday" column="birthday"/>
+        <result property="race" column="race"/>
+        <result property="party" column="party"/>
+        <result property="speciality" column="speciality"/>
+        <result property="hobby" column="hobby"/>
+        <result property="remark" column="remark"/>
+        <result property="createdate" column="createdate"/>
+        <association property="deptinf" javaType="com.ynu.pojo.Deptinf">
+            <id property="dept_id" column="dept_id"/>
+            <result property="dept_name" column="dept_name"/>
+        </association>
+        <association property="jobinf" javaType="com.ynu.pojo.Jobinf">
+            <id property="job_id" column="job_id"/>
+            <result property="job_name" column="job_name"/>
+        </association>
+    </resultMap>
+
+    <select id="getAllEmployeeinfs" resultType="com.ynu.pojo.Employeeinf">
+        select * from employeeinf ORDER BY employee_id DESC
+    </select>
+
+    <insert id="addEmployeeinf" parameterType="com.ynu.pojo.Employeeinf">
+        INSERT into employeeinf(dept_id, job_id, realname, card_id, address, postcode, tel, phone, qqnum, email, sex, party, birthday, race, education, speciality, hobby, remark)
+        VALUES (#{dept_id}, #{job_id},#{realname},#{card_id},#{address},#{postcode},#{tel},#{phone},#{qqnum},#{email}, #{sex}, #{party},#{birthday}, #{race}, #{education},#{speciality}, #{hobby}, #{remark})
+    </insert>
+
+    <delete id="deleteEmployeeById" parameterType="int">
+        delete from employeeinf where employee_id = #{employee_id}
+    </delete>
+
+    <update id="updateEmployee" parameterType="com.ynu.pojo.Employeeinf">
+        update employeeinf set dept_id = #{dept_id}, job_id = #{job_id}, realname = #{realname}, card_id = #{card_id}, address = #{address}, postcode = #{postcode}, tel = #{tel}, phone = #{phone}, qqnum = #{qqnum}, email = #{email}, sex = #{sex}, party = #{party}, birthday = #{birthday}, race = #{race}, education = #{education}, speciality = #{speciality}, hobby = #{hobby}, remark = #{remark}
+        where employee_id = #{employee_id}
+    </update>
+
+    <select id="getAllEmployeeWithDeptJob" resultMap="employeeDetail">
+        select employee_id, realname, sex, phone, email, education, card_id, address, createdate, employeeinf.dept_id as dept_id, dept_name, employeeinf.job_id as job_id, job_name
+        from deptinf, employeeinf, jobinf
+        WHERE deptinf.dept_id = employeeinf.dept_id AND employeeinf.job_id = jobinf.job_id
+        ORDER BY employee_id DESC
+    </select>
+
+    <select id="seletEmployeeDetailById" resultMap="employeeDetail">
+        select postcode, tel, qqnum, party, birthday, race, speciality, hobby,employeeinf.remark as remark, employee_id, realname, sex, phone, email, education, card_id, address, createdate, employeeinf.dept_id as dept_id, dept_name, employeeinf.job_id as job_id, job_name
+        from deptinf, employeeinf, jobinf
+        WHERE deptinf.dept_id = employeeinf.dept_id AND employeeinf.job_id = jobinf.job_id and employee_id = #{employee_id}
+        ORDER BY employee_id DESC
+    </select>
+
+    <select id="selectEmployeeByEveryThing" resultMap="employeeDetail">
+         select employee_id, realname, sex, phone, email, education, card_id, address, createdate, employeeinf.dept_id as dept_id, dept_name, employeeinf.job_id as job_id, job_name
+        from deptinf, employeeinf, jobinf
+        WHERE deptinf.dept_id = employeeinf.dept_id AND employeeinf.job_id = jobinf.job_id
+        <if test="job_name != null">
+            and job_name like concat('%', #{job_name},'%')
+        </if>
+        <if test="sex != null">
+            and sex = #{sex}
+        </if>
+        <if test="realname != null">
+            and realname like concat('%', #{realname},'%')
+        </if>
+        <if test="phone != null">
+            and phone like concat('%', #{phone},'%')
+        </if>
+        <if test="card_id != null">
+            and card_id like concat('%', #{card_id},'%')
+        </if>
+        <if test="dept_name != null">
+            and dept_name like concat('%', #{dept_name},'%')
+        </if>
+        ORDER BY employee_id DESC
+    </select>
+
+    <delete id="delSomeEmps" parameterType="int">
+        delete from employeeinf where employee_id in
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

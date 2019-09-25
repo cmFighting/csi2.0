@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+    <!--    一般可以写成配置文件，通过配置文件的形式进行引用 外面文件的优先级要高一些-->
+    <!--    使用配置文件的方式更加方便，也不用注意分号之类的问题-->
+    <properties resource="jdbc.properties">
+        <property name="username" value="SongChenming"/>
+    <!--        通过${username}来进行引用-->
+    </properties>
+
+    <!--    类型别名，实际上是为了偷懒 可以不使用那种很长的文件名 -->
+    <!--    <typeAliases>-->
+    <!--    </typeAliases>-->
+
+    <settings>
+        <setting name="logImpl" value="LOG4J"/>
+        <setting name="lazyLoadingEnabled" value="true"/>
+    </settings>
+
+    <!-- 环境, 就是配置数据库访问环境的标签.
+    default - 默认使用什么环境
+    -->
+    <environments default="development">
+        <!-- 配置具体的某一个环境
+        id - 当前环境的命名
+        -->
+        <environment id="development">
+            <!-- 事务管理方式, 当前框架管理数据库事务使用什么技术.
+            type - 使用的具体技术. JDBC, 就是Connection.commit()/rollback()
+            -->
+            <transactionManager type="JDBC" />
+            <!-- 数据源, 访问的数据库参数
+            type - 管理方式, 管理Connection的方式,
+            POOLED , 代表池化管理. 就是连接池.
+            -->
+            <dataSource type="UNPOOLED">
+                <!-- 配置具体参数 -->
+                <property name="driver" value="${driver}" />
+                <property name="url" value="${url}" />
+                <property name="username" value="${username}" />
+                <property name="password" value="${password}" />
+            </dataSource>
+        </environment>
+    </environments>
+
+    <!-- 引用映射文件 -->
+    <!--    配置文件这里很关键-->
+    <mappers>
+        <mapper resource="com.ynu.mapper/UserinfMapper.xml"/>
+        <mapper resource="com.ynu.mapper/DeptinfMapper.xml"/>
+        <mapper resource="com.ynu.mapper/DocumentinfMapper.xml"/>
+        <mapper resource="com.ynu.mapper/FacekeyinfMapper.xml"/>
+        <mapper resource="com.ynu.mapper/NoticeinfMapper.xml"/>
+        <!--        <mapper class="com.ynu.mapper.UserMapper.xml"/>-->
+    </mappers>
+</configuration>

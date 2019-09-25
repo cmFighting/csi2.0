@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ynu.mapper.JobinfMapper">
+    <select id="getAllJobinf" resultType="com.ynu.pojo.Jobinf">
+        select * from jobinf ORDER BY job_id DESC
+    </select>
+
+    <insert id="addJob" parameterType="com.ynu.pojo.Jobinf">
+        insert into jobinf(job_name, remark) VALUES (#{job_name}, #{remark})
+    </insert>
+
+    <delete id="deleteJob" parameterType="int">
+        delete from jobinf where job_id = #{job_id}
+    </delete>
+
+    <update id="updateJob" parameterType="com.ynu.pojo.Jobinf">
+        update jobinf set job_name = #{job_name}, remark = #{remark} where job_id = #{job_id}
+    </update>
+
+    <select id="selectJobByName" resultType="com.ynu.pojo.Jobinf">
+        select * from jobinf where job_name like CONCAT('%',#{job_name},'%') ORDER BY job_id DESC
+    </select>
+
+    <select id="selectJobById" resultType="com.ynu.pojo.Jobinf">
+        select * from jobinf where job_id = #{job_id} ORDER BY job_id DESC
+    </select>
+
+    <delete id="delSomeJobs" parameterType="int">
+        delete from jobinf where job_id in
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

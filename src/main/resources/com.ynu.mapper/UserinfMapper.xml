@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ynu.mapper.UserinfMapper">
+    <select id="getAllUser" resultType="com.ynu.pojo.Userinf">
+        select * from userinf ORDER BY uid DESC
+    </select>
+
+    <insert id="addUser" parameterType="com.ynu.pojo.Userinf">
+        insert into userinf(loginname, `password`, username, status) VALUES (#{loginname}, #{password}, #{username}, #{status})
+    </insert>
+
+    <delete id="deleteUserById" parameterType="int">
+        delete from userinf where uid = #{uid}
+    </delete>
+
+    <update id="updateUser" parameterType="com.ynu.pojo.Userinf">
+        update userinf set `password` = #{password}, `status` = #{status}, username = #{username}, loginname=#{loginname} where uid = #{uid}
+    </update>
+
+    <select id="selectUserById" resultType="com.ynu.pojo.Userinf">
+        select * from userinf where uid = #{uid} ORDER BY uid DESC
+    </select>
+
+    <select id="selectUserByUsernameAndStatus" resultType="com.ynu.pojo.Userinf">
+        select * from userinf
+        <where>
+            <if test="username != null">
+                and username = #{username}
+            </if>
+            <if test="status != null">
+                and `status` = #{status}
+            </if>
+        </where>
+        ORDER BY uid DESC
+    </select>
+
+    <select id="selectByLoginName" resultType="com.ynu.pojo.Userinf">
+        select * from userinf where loginname = #{loginname} ORDER BY uid DESC
+    </select>
+
+    <select id="getAllUserExceptMe" resultType="com.ynu.pojo.Userinf">
+        select * from userinf where uid != #{uid} ORDER BY uid DESC
+    </select>
+
+
+    <delete id="delSomeUsers" parameterType="int">
+        delete from userinf where uid in
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ynu.mapper.NoticeinfMapper">
+
+    <resultMap id="userWithNoticex" type="com.ynu.pojo.UserWithNotice">
+        <id property="uid" column="uid"/>
+        <result property="username" column="username"/>
+        <collection property="noticeinfs" ofType="com.ynu.pojo.Noticeinf">
+            <id property="notice_id" column="notice_id"/>
+            <result property="title" column="title"/>
+            <result property="content" column="content"/>
+            <result property="createdate" column="createdate"/>
+        </collection>
+    </resultMap>
+
+    <resultMap id="noticeWithUser" type="com.ynu.pojo.NoticeWithUser">
+        <id property="notice_id" column="notice_id"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="createdate" column="createdate"/>
+        <association property="userinf" javaType="com.ynu.pojo.Userinf">
+            <id property="uid" column="uid"/>
+            <result property="username" column="username"/>
+        </association>
+    </resultMap>
+
+
+    <select id="getAllNoticeinf" resultType="com.ynu.pojo.Noticeinf">
+        select * from noticeinf ORDER BY notice_id DESC
+    </select>
+
+    <select id="getAllUserWithNotice" resultMap="userWithNoticex">
+        SELECT uid,username, notice_id, title, content, noticeinf.createdate as createdate FROM noticeinf,userinf
+        WHERE noticeinf.user_id = userinf.uid
+        ORDER BY notice_id DESC
+    </select>
+
+    <insert id="addNotice" parameterType="com.ynu.pojo.Noticeinf">
+        insert into noticeinf(title, content, user_id) values (#{title}, #{content}, #{user_id})
+    </insert>
+
+    <delete id="deleteNoticeById" parameterType="int">
+        delete from noticeinf where notice_id = #{notice_id}
+    </delete>
+
+    <update id="updateNoticeinf" parameterType="com.ynu.pojo.Noticeinf">
+        update noticeinf set title = #{title}, content = #{content} where notice_id = #{notice_id}
+    </update>
+
+    <select id="getAllNoticwithuser" resultMap="noticeWithUser">
+        SELECT uid,username, notice_id, title, content, noticeinf.createdate as createdate FROM noticeinf,userinf
+        WHERE noticeinf.user_id = userinf.uid
+        ORDER BY notice_id DESC
+    </select>
+
+    <select id="selectNoticeinfById" resultType="com.ynu.pojo.Noticeinf">
+        select * from noticeinf where notice_id = #{notice_id} ORDER BY notice_id DESC
+    </select>
+
+    <select id="selectNoticeinfByTitileAndContent" resultMap="noticeWithUser">
+        SELECT uid,username, notice_id, title, content, noticeinf.createdate as createdate
+        FROM noticeinf,userinf
+        WHERE noticeinf.user_id = userinf.uid
+        <if test="title != null">
+            and title like concat('%', #{title},'%')
+        </if>
+        <if test="content != null">
+            and content like concat('%', #{content},'%')
+        </if>
+        ORDER BY notice_id DESC
+    </select>
+
+    <delete id="delSomeNotices" parameterType="int">
+        delete from noticeinf where notice_id in
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

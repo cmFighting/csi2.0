@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ynu.mapper.DeptinfMapper">
+
+    <select id="getAllDeptinf" resultType="com.ynu.pojo.Deptinf">
+        select * from deptinf ORDER BY dept_id DESC
+    </select>
+
+    <insert id="addDept" parameterType="com.ynu.pojo.Deptinf">
+        insert deptinf(dept_name, remark) values (#{dept_name}, #{remark})
+    </insert>
+
+    <delete id="deleteDeptById" parameterType="int">
+        delete from deptinf where dept_id = #{dept_id}
+    </delete>
+
+    <update id="updateDept" parameterType="com.ynu.pojo.Deptinf">
+        update deptinf set dept_name = #{dept_name}, remark = #{remark} where  dept_id = #{dept_id}
+    </update>
+
+    <select id="selectDepetById" resultType="com.ynu.pojo.Deptinf">
+        select * from deptinf where dept_id = #{dept_id} ORDER BY dept_id DESC
+    </select>
+
+    <select id="selectDeptByName" resultType="com.ynu.pojo.Deptinf">
+        select * from deptinf where dept_name  like CONCAT('%',#{dept_name},'%') ORDER BY dept_id DESC
+    </select>
+
+    <delete id="deleteSomeDept" parameterType="int">
+        delete from deptinf where dept_id in
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>
